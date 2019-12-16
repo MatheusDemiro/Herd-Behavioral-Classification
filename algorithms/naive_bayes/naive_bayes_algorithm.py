@@ -1,8 +1,8 @@
-from algorithms.pre_processing.ClearData import PreProcessing
+from pre_processing.clearData import PreProcessing
 
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import classification_report, f1_score, recall_score, precision_score, accuracy_score
+from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_score
 
 
 class NaiveBayes:
@@ -21,11 +21,12 @@ class NaiveBayes:
 
         y_pred = clf.predict(features_test)
 
-        recall = recall_score(labels_test, y_pred, average='micro')
-        precision = precision_score(labels_test, y_pred, average='micro')
-        fmeasure = f1_score(labels_test, y_pred, average='micro')
+        recall = recall_score(labels_test, y_pred, average='macro')
+        precision = precision_score(labels_test, y_pred, average='macro')
+        fmeasure = f1_score(labels_test, y_pred, average='macro')
+        accuracy = accuracy_score(labels_test, y_pred)
 
-        return "Recall: %.4f\nPrecision: %.4f\nF-measure: %.4f"%(fmeasure, recall, precision)
+        return "Recall: %.4f\nPrecision: %.4f\nF-measure: %.4f\nAccuracy: %.4f" % (recall, precision, fmeasure, accuracy)
 
     def execution(self):
         return self.algorithm()

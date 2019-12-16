@@ -1,4 +1,4 @@
-from algorithms.pre_processing.ClearData import PreProcessing
+from pre_processing.clearData import PreProcessing
 
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score, recall_score, precision_score, confusion_matrix
@@ -23,25 +23,25 @@ class KNN():
         labels = self._processing.getLabels()
         features = self._processing.getData("RF")
 
-        features_train, features_test, labels_train, labels_test = train_test_split(features, labels, test_size=0.33,
+        features_train, features_test, labels_train, labels_test = train_test_split(features, labels, test_size=0.30,
                                                                                     random_state=0)
         random_forest_clf = RandomForestClassifier(n_estimators=100, random_state=0)
 
-        gs = GridSearchCV(random_forest_clf, cv=4, param_grid=hyper, iid=False)
+        gs = GridSearchCV(random_forest_clf, cv=6, param_grid=hyper, iid=False)
 
         gs.fit(features_train, labels_train)
 
         y_pred = gs.predict(features_test)
 
-        recall = recall_score(labels_test, y_pred, average='micro')
-        precision = precision_score(labels_test, y_pred, average='micro')
-        fmeasure = f1_score(labels_test, y_pred, average='micro')
+        recall = recall_score(labels_test, y_pred, average='macro')
+        precision = precision_score(labels_test, y_pred, average='macro')
+        fmeasure = f1_score(labels_test, y_pred, average='macro')
 
-        print(confusion_matrix(labels_test, y_pred, labels=[0, 1, 2, 3, 4]))
+        print(confusion_matrix(labels_test, y_pred, labels=[0, 1, 2]))
 
         print(gs.best_params_)
 
-        return "Recall: %.4f\nPrecision: %.4f\nF-measure: %.4f"%(fmeasure, recall, precision)
+        return "Recall: %.4f\nPrecision: %.4f\nF-measure: %.4f"%(recall, precision, fmeasure)
 
     def execution(self):
         return self.algorithm()

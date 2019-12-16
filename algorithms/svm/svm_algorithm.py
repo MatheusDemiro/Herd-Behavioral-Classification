@@ -1,9 +1,9 @@
-from algorithms.pre_processing.ClearData import PreProcessing
+from pre_processing.clearData import PreProcessing
 
-from sklearn.svm import SVC, NuSVC
-from sklearn.metrics import f1_score, recall_score, precision_score, confusion_matrix
-from sklearn.model_selection import train_test_split, RandomizedSearchCV, GridSearchCV
-import numpy as np
+from sklearn.svm import SVC
+from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_score, confusion_matrix
+from sklearn.model_selection import train_test_split, RandomizedSearchCV
+
 
 class SVM():
     def __init__(self):
@@ -11,7 +11,7 @@ class SVM():
 
     def algorithm(self):
         hyper = {
-            "C": [1.0, 2.0, 3.0],
+            "C": [1.0, 2.0, 3.0, 10.0, 100.0, 1000.0],
             "kernel": ['linear', 'rbf', 'sigmoid', 'poly'],
             "degree": [2, 3, 4],
             "gamma": ["scale"]
@@ -22,9 +22,9 @@ class SVM():
 
         features_train, features_test, labels_train, labels_test = train_test_split(features, labels, test_size=0.30, random_state=0)
 
-        clf = SVC(random_state=0)
+        clf = SVC()
 
-        rs = RandomizedSearchCV(clf, hyper, cv=4, n_jobs=-1, iid=False, verbose=1000)
+        rs = RandomizedSearchCV(clf, hyper, cv=6, n_jobs=-1, iid=False)
 
         rs.fit(features_train, labels_train)
 
@@ -32,13 +32,15 @@ class SVM():
 
         print(confusion_matrix(labels_test, y_pred))
 
-        recall = recall_score(labels_test, y_pred, average='micro')
-        precision = precision_score(labels_test, y_pred, average='micro')
-        fmeasure = f1_score(labels_test, y_pred, average='micro')
+        recall = recall_score(labels_test, y_pred, average='macro')
+        precision = precision_score(labels_test, y_pred, average='macro')
+        fmeasure = f1_score(labels_test, y_pred, average='macro')
+        accuracy = accuracy_score(labels_test, y_pred)
 
         print(rs.best_params_)
 
-        return "Recall: %.4f\nPrecision: %.4f\nF-measure: %.4f"%(fmeasure, recall, precision)
+        return "Recall: %.4f\nPrecision: %.4f\nF-measure: %.4f\nAccuracy: %.4f" % (
+            recall, precision, fmeasure, accuracy)
 
     def execution(self):
         return self.algorithm()

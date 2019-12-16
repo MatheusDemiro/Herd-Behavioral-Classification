@@ -1,8 +1,8 @@
-from algorithms.pre_processing.ClearData import PreProcessing
+from pre_processing.clearData import PreProcessing
 
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import f1_score, recall_score, precision_score, confusion_matrix
-from sklearn.model_selection import train_test_split, RandomizedSearchCV, GridSearchCV
+from sklearn.metrics import f1_score, recall_score, precision_score, accuracy_score, confusion_matrix
+from sklearn.model_selection import train_test_split, GridSearchCV
 
 
 class DecisionTree:
@@ -20,11 +20,12 @@ class DecisionTree:
         labels = self._processing.getLabels()
         features = self._processing.getData("DT")
 
-        features_train, features_test, labels_train, labels_test = train_test_split(features, labels, test_size=0.20, random_state=0)
+        features_train, features_test, labels_train, labels_test = train_test_split(features, labels, test_size=0.30,
+                                                                                    random_state=0)
 
         #rs = RandomizedSearchCV(clf, hyper, random_state=0, cv=4, n_jobs=-1, iid=False)
 
-        rs = GridSearchCV(clf, hyper, cv=4, n_jobs=-1, iid=False)
+        rs = GridSearchCV(clf, hyper, cv=6, n_jobs=-1, iid=False)
 
         rs.fit(features, labels)
 
@@ -32,13 +33,14 @@ class DecisionTree:
 
         print(confusion_matrix(labels_test, y_pred))
 
-        recall = recall_score(labels_test, y_pred, average='micro')
-        precision = precision_score(labels_test, y_pred, average='micro')
-        fmeasure = f1_score(labels_test, y_pred, average='micro')
+        recall = recall_score(labels_test, y_pred, average='macro')
+        precision = precision_score(labels_test, y_pred, average='macro')
+        fmeasure = f1_score(labels_test, y_pred, average='macro')
+        accuracy = accuracy_score(labels_test, y_pred)
 
-        print(rs.best_score_, rs.best_params_)
+        print(rs.best_params_)
 
-        return "Recall: %.4f\nPrecision: %.4f\nF-measure: %.4f" % (fmeasure, recall, precision)
+        return "Recall: %.4f\nPrecision: %.4f\nF-measure: %.4f\nAccuracy: %.4f" % (recall, precision, fmeasure, accuracy)
 
     def execution(self):
         return self.algorithm()
