@@ -1,3 +1,3 @@
-# Classificação do comportamento de rebanhos
+# Classification of herd behavior
 
-Uso de algoritmos de machine learning para classificação do comportamento de rebanhos.
+Use of machine learning algorithms to classify herd behavior.
